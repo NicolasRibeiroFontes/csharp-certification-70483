@@ -8,15 +8,8 @@ namespace Certification
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
-            Task t = Task.Run(() =>
-            {
-                for (int x = 0; x < 100; x++)
-                {
-                    Console.Write("*");
-                }
-            });
-
-            t.Wait();
+            Task<int> t = Task.Run(() => { return 42; });
+            Console.WriteLine(t.Result); // Displays 42 
 
 
         }
