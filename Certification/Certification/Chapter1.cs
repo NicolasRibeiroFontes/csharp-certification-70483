@@ -14,6 +14,7 @@ namespace Certification
                 return i.Result * 2;
             });
 
+            Console.WriteLine(t.Result); // Displays 84
 
 
         }
