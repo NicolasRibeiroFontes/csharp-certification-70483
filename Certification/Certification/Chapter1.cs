@@ -8,24 +8,25 @@ namespace Certification
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
-            Task<int> t = Task.Run(() =>
+            Task<Int32[]> parent = Task.Run(() =>
             {
-                return 42;
+                var results = new Int32[3];
+                new Task(() => results[0] = 0,
+                    TaskCreationOptions.AttachedToParent).Start();
+                new Task(() => results[1] = 1,
+                    TaskCreationOptions.AttachedToParent).Start();
+                new Task(() => results[2] = 2,
+                    TaskCreationOptions.AttachedToParent).Start();
+                return results;
             });
-            t.ContinueWith((i) =>
-            {
-                Console.WriteLine("Canceled");
-            }, TaskContinuationOptions.OnlyOnCanceled);
-            t.ContinueWith((i) =>
-            {
-                Console.WriteLine("Faulted");
-            }, TaskContinuationOptions.OnlyOnFaulted);
-            var completedTask = t.ContinueWith((i) =>
-            {
-                Console.WriteLine("Completed");
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            completedTask.Wait();
+            var finalTask = parent.ContinueWith(
+               parentTask =>
+               {
+                   foreach (int i in parentTask.Result)
+                       Console.WriteLine(i);
+               });
 
+            finalTask.Wait();
 
         }
     }
