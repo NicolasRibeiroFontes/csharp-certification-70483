@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Certification
 {
@@ -8,9 +8,16 @@ namespace Certification
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
-            ThreadPool.QueueUserWorkItem((s) => {
-                Console.WriteLine("Workingona thread from threadpool");
+            Task t = Task.Run(() =>
+            {
+                for (int x = 0; x < 100; x++)
+                {
+                    Console.Write("*");
+                }
             });
+
+            t.Wait();
+
 
         }
     }
