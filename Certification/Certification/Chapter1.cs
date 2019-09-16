@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Certification
@@ -8,22 +9,24 @@ namespace Certification
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
-            Task<Int32[]> parent = Task.Run(() =>
-            {
-                var results = new Int32[3];
-                TaskFactory tf = new TaskFactory(TaskCreationOptions.AttachedToParent,
-                   TaskContinuationOptions.ExecuteSynchronously);
-                tf.StartNew(() => results[0] = 0);
-                tf.StartNew(() => results[1] = 1);
-                tf.StartNew(() => results[2] = 2);
-                return results;
+            Task[] tasks = new Task[3];
+            tasks[0] = Task.Run(() => {
+                Thread.Sleep(1000);
+                Console.WriteLine("1");
+                return 1;
             });
-            var finalTask = parent.ContinueWith(
-               parentTask => {
-                   foreach (int i in parentTask.Result)
-                       Console.WriteLine(i);
-               });
-            finalTask.Wait();
+            tasks[1] = Task.Run(() => {
+                Thread.Sleep(1000);
+                Console.WriteLine("2");
+                return 2;
+            });
+            tasks[2] = Task.Run(() => {
+                Thread.Sleep(1000);
+                Console.WriteLine("3");
+                return 3;
+            }
+ );
+            Task.WaitAll(tasks);
 
         }
     }
