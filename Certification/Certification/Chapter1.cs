@@ -10,10 +10,15 @@ namespace Certification
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
-            Parallel.For(0, 10, i => { Thread.Sleep(1000); });
+            ParallelLoopResult result = Parallel.For(0, 1000, (int i, ParallelLoopState loopState) => {
+                if (i == 500)
+                {
+                    Console.WriteLine("Breaking loop");
+                    loopState.Break();
+                }
+                return;
+            });
 
-            var numbers = Enumerable.Range(0, 10);
-            Parallel.ForEach(numbers, i => { Thread.Sleep(1000); });
 
         }
     }
