@@ -15,22 +15,28 @@ namespace Certification
             }
         }
 
+        [ThreadStatic]
+        public static int _field;
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
-            bool stopped = false;
-            Thread t = new Thread(new ThreadStart(() => {
-                while (!stopped) {
-                    Console.WriteLine("Running..."); Thread.Sleep(1000);
+            new Thread(() =>
+            {
+                for (int x = 0; x < 10; x++)
+                {
+                    _field++;
+                    Console.WriteLine("ThreadA:{0}", _field);
                 }
-            }));
-            t.Start();
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
-            stopped = true;
-            Console.WriteLine("Finish");
-            t.Join();
+            }).Start();
+            new Thread(() =>
+            {
+                for (int x = 0; x < 10; x++)
+                {
+                    _field++;
+                    Console.WriteLine("ThreadB:{0}", _field);
+                }
+            }).Start();
         }
+
     }
 }
-
