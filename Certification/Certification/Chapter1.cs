@@ -5,38 +5,27 @@ namespace Certification
 {
     public class Chapter1
     {
-
-        public static void ThreadMethod(object o)
+        public static ThreadLocal<int> _field = new ThreadLocal<int>(() =>
         {
-            for (int i = 0; i < (int)o; i++)
-            {
-                Console.WriteLine("ThreadProc:{ 0}", i);
-                Thread.Sleep(0);
-            }
-        }
-
-        [ThreadStatic]
-        public static int _field;
+            return Thread.CurrentThread.ManagedThreadId;
+        });
         public static void Run()
         {
             Console.WriteLine("Chapter 1");
             new Thread(() =>
             {
-                for (int x = 0; x < 10; x++)
+                for (int x = 0; x < _field.Value; x++)
                 {
-                    _field++;
-                    Console.WriteLine("ThreadA:{0}", _field);
+                    Console.WriteLine("ThreadA:{0}", x);
                 }
             }).Start();
             new Thread(() =>
             {
-                for (int x = 0; x < 10; x++)
+                for (int x = 0; x < _field.Value; x++)
                 {
-                    _field++;
-                    Console.WriteLine("ThreadB:{0}", _field);
+                    Console.WriteLine("ThreadB:{0}", x);
                 }
             }).Start();
         }
-
     }
 }
